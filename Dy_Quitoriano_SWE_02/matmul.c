@@ -35,7 +35,7 @@ void zero_matrix(float *M, int n) { // instantiate an empty matrix for C
 
 // C = A * B implementation:
 // its like: i x k mult k x j = i x j
-void mmm(float **A, float **B, float **C, int n){
+void mmm_ijk(float *A, float *B, float *C, int n){
     for (int i = 0; i < n; i++){
         for(int j = 0; j < n; j++){
             //C[i][j] = 0.0f;
@@ -51,11 +51,17 @@ void mmm(float **A, float **B, float **C, int n){
 }
 
 int main(){
+    printf("=== NEW BUILD RUNNING ===\n");
     int n;
     int trials = 10; // can change to 30
 
     printf("Enter matrix size n: ");
-    scanf("%d", &n);
+    fflush(stdout);
+    
+    if (scanf("%d", &n) != 1) {
+        printf("Invalid input\n");
+        return 1;
+    }
 
     // Contiguous memory for A, B, C
     float *A = malloc(n * n * sizeof(float));
@@ -69,11 +75,11 @@ int main(){
     double t_start, t_end;
     double total_time = 0.0;
 
-    for int(t = 0; t < trials; t++){
+    for (int t = 0; t < trials; t++){
         zero_matrix(C, n);
-        get_walltime(&t_start);
+        get_walltime_(&t_start);
         mmm_ijk(A, B, C, n);
-        get_walltime(&t_end);
+        get_walltime_(&t_end);
         total_time += (t_end - t_start);
     }
 
