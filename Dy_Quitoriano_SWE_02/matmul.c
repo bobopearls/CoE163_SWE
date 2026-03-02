@@ -44,14 +44,98 @@ void mmm_ijk(float *A, float *B, float *C, int n){
                 //C[i][j] += A[i][k] * B[k][j];
                 C[(i*n) + j] += A[(i*n) + k] * B[(k*n) + j];
             }
-        }
-            
+        } 
+    }
+}
+
+void mmm_jik(float *A, float *B, float *C, int n){
+    for (int j = 0; j < n; j++){
+        for(int i = 0; i < n; i++){
+            //C[i][j] = 0.0f;
+            C[(i*n) + j] = 0.0f;
+            for(int k = 0; k < n; k++){
+                //C[i][j] += A[i][k] * B[k][j];
+                C[(i*n) + j] += A[(i*n) + k] * B[(k*n) + j];
+            }
+        } 
+    }
+}
+
+void mmm_ikj(float *A, float *B, float *C, int n){
+    for (int i = 0; i < n; i++){
+        for(int k = 0; k < n; k++){
+            //C[i][j] = 0.0f;
+            //C[(i*n) + j] = 0.0f;
+            for(int j = 0; j < n; j++){
+                //C[i][j] += A[i][k] * B[k][j];
+                C[(i*n) + j] += A[(i*n) + k] * B[(k*n) + j];
+            }
+        } 
+    }
+}
+
+void mmm_kij(float *A, float *B, float *C, int n){
+    for (int k = 0; k < n; k++){
+        for(int i = 0; i < n; i++){
+            //C[i][j] = 0.0f;
+            // C[(i*n) + j] = 0.0f;
+            for(int j = 0; j < n; j++){
+                //C[i][j] += A[i][k] * B[k][j];
+                C[(i*n) + j] += A[(i*n) + k] * B[(k*n) + j];
+            }
+        } 
+    }
+}
+
+void mmm_jki(float *A, float *B, float *C, int n){
+    for (int j = 0; j < n; j++){
+        for(int k = 0; k < n; k++){
+            //C[i][j] = 0.0f;
+            //C[(i*n) + j] = 0.0f;
+            for(int i = 0; i < n; i++){
+                //C[i][j] += A[i][k] * B[k][j];
+                C[(i*n) + j] += A[(i*n) + k] * B[(k*n) + j];
+            }
+        } 
+    }
+}
+
+void mmm_kji(float *A, float *B, float *C, int n){
+    for (int k = 0; k < n; k++){
+        for(int j = 0; j < n; j++){
+            //C[i][j] = 0.0f;
+            // C[(i*n) + j] = 0.0f;
+            for(int i = 0; i < n; i++){
+                //C[i][j] += A[i][k] * B[k][j];
+                C[(i*n) + j] += A[(i*n) + k] * B[(k*n) + j];
+            }
+        } 
+    }
+}
+// avoid repeating the code 
+double benchmark(void (*mmm_func)(float*,float*,float*,int),
+                 float *A, float *B, float *C,
+                 int n, int trials)
+{
+    double t_start, t_end;
+    double total = 0.0;
+
+    for (int t = 0; t < trials; t++) {
+
+        zero_matrix(C, n);
+
+        get_walltime_(&t_start);
+        mmm_func(A, B, C, n);
+        get_walltime_(&t_end);
+
+        total += (t_end - t_start);
     }
 
+    return total / trials;
 }
 
 int main(){
-    printf("=== NEW BUILD RUNNING ===\n");
+    printf("=== NEW BUILD RUNNING1 ===\n");
     int n;
     int trials = 10; // can change to 30
 
@@ -71,9 +155,10 @@ int main(){
     // fill w random values
     fill_random(A, n);
     fill_random(B, n);
-
+/*
     double t_start, t_end;
     double total_time = 0.0;
+
 
     for (int t = 0; t < trials; t++){
         zero_matrix(C, n);
@@ -82,9 +167,32 @@ int main(){
         get_walltime_(&t_end);
         total_time += (t_end - t_start);
     }
+ 
 
     printf("Average time over %d trials, takes %f seconds\n",
     trials, total_time / trials);
+*/ 
+    // replace with one that runs all the different memory accesses
+    printf("\nnumber of trials: %d\n", trials);
+    printf("\nResults for n = %d\n\n", n);
+
+    printf("ijk: %f seconds\n",
+        benchmark(mmm_ijk, A, B, C, n, trials));
+
+    printf("ikj: %f seconds\n",
+        benchmark(mmm_ikj, A, B, C, n, trials));
+
+    printf("jik: %f seconds\n",
+        benchmark(mmm_jik, A, B, C, n, trials));
+
+    printf("jki: %f seconds\n",
+        benchmark(mmm_jki, A, B, C, n, trials));
+
+    printf("kij: %f seconds\n",
+        benchmark(mmm_kij, A, B, C, n, trials));
+
+    printf("kji: %f seconds\n",
+        benchmark(mmm_kji, A, B, C, n, trials));
 
     free(A);
     free(B);
