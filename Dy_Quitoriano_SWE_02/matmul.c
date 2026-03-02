@@ -39,7 +39,7 @@ void mmm_ijk(float *A, float *B, float *C, int n){
     for (int i = 0; i < n; i++){
         for(int j = 0; j < n; j++){
             //C[i][j] = 0.0f;
-            C[(i*n) + j] = 0.0f;
+            //C[(i*n) + j] = 0.0f;
             for(int k = 0; k < n; k++){
                 //C[i][j] += A[i][k] * B[k][j];
                 C[(i*n) + j] += A[(i*n) + k] * B[(k*n) + j];
@@ -52,7 +52,7 @@ void mmm_jik(float *A, float *B, float *C, int n){
     for (int j = 0; j < n; j++){
         for(int i = 0; i < n; i++){
             //C[i][j] = 0.0f;
-            C[(i*n) + j] = 0.0f;
+            //C[(i*n) + j] = 0.0f;
             for(int k = 0; k < n; k++){
                 //C[i][j] += A[i][k] * B[k][j];
                 C[(i*n) + j] += A[(i*n) + k] * B[(k*n) + j];
@@ -135,9 +135,9 @@ double benchmark(void (*mmm_func)(float*,float*,float*,int),
 }
 
 int main(){
-    printf("=== NEW BUILD RUNNING1 ===\n");
+    printf("=== RUNNING ===\n");
     int n;
-    int trials = 10; // can change to 30
+    int trials = 30; // can change to 30
 
     printf("Enter matrix size n: ");
     fflush(stdout);
