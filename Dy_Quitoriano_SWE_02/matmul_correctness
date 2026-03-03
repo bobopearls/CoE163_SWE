@@ -1,0 +1,102 @@
+#include <stdio.h>
+#include <math.h>
+#include <stdlib.h>
+
+void fill_random(float *M, int n) { //  generate random matrix values
+    for (int i = 0; i < n; i++)
+        for (int j = 0; j < n; j++)
+            M[i*n + j] = (float)rand() / RAND_MAX;
+}
+
+void zero_matrix(float *M, int n) { // instantiate an empty matrix for C
+    for (int i = 0; i < n*n; i++)
+        M[i] = 0.0f;
+}
+
+void mmm_ijk(float *A, float *B, float *C, int n){
+    for (int i = 0; i < n; i++){
+        for(int j = 0; j < n; j++){
+            for(int k = 0; k < n; k++){
+                C[(i*n) + j] += A[(i*n) + k] * B[(k*n) + j];
+            }
+        } 
+    }
+    for (int i = 0; i < n; i++) { //printing the matrix
+        for (int j = 0; j < n; j++) {
+            printf("%.2f ", C[(i * n) + j]); 
+        }
+        printf("\n"); 
+    }
+    printf("\n");
+}
+
+void block_ijk(float *A, float *B, float *C, int n, int N){
+    int blocks = n/N;
+    
+    //blocks
+    for (int ii = 0; ii < n; ii+=blocks){
+        for(int jj = 0; jj < n; jj+=blocks){
+            for(int kk = 0; kk < n; kk+=blocks){
+                //normal mmm code
+                for(int i = ii; i < ii + blocks; i++){
+                    for (int j = jj; j < jj + blocks; j++){
+                        for(int k = kk; k < kk + blocks; k++){
+                            C[(i*n) + j] += A[(i*n) + k] * B[(k*n) + j];
+                        }
+                    } 
+                }
+               
+            }
+        } 
+    }
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            printf("%.2f ", C[(i * n) + j]); 
+        }
+        printf("\n"); 
+    }
+    printf("\n");
+}
+
+int main(){
+    printf("=== RUNNING ===\n");
+    int n;
+    int N;
+
+    printf("Enter matrix size n: ");
+    fflush(stdout);
+    
+    if (scanf("%d", &n) != 1) {
+        printf("Invalid input\n");
+        return 1;
+    }
+
+    printf("Enter block size N: ");
+    fflush(stdout);
+    
+    if (scanf("%d", &N) != 1) {
+        printf("Invalid input\n");
+        return 1;
+    }
+
+    // Contiguous memory for A, B, C
+    float *A = malloc(n * n * sizeof(float));
+    float *B = malloc(n * n * sizeof(float));
+    float *C = malloc(n * n * sizeof(float));
+
+    // fill w random values
+    fill_random(A, n);
+    fill_random(B, n);
+
+    printf("=== MMM ===\n");
+    zero_matrix(C, n); //clean C
+    mmm_ijk(A, B, C, n);
+    printf("=== BLOCKING ===\n");
+    zero_matrix(C, n);
+    block_ijk(A, B, C, n, N);
+
+    free(A);
+    free(B);
+    free(C);
+    return 0;
+}
