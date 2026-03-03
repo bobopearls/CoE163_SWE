@@ -209,7 +209,7 @@ int main(){
         return 1;
     }
 
-    printf("Enter matrix size N: ");
+    printf("Enter block size N: ");
     fflush(stdout);
     
     if (scanf("%d", &N) != 1) {
