@@ -71,30 +71,29 @@ void print_mat(float *M, int n){
 }
 
 int main(){
+    // AUTOMATED NOW
+    int sizes[] = {512, 1024, 2048, 4096};
+    int num_sizes = sizeof(sizes) / sizeof(sizes[0]);
+    int trials = 30;
     printf("=== RUNNING ===\n");
-    int n;
-    int trials = 30; // can change to 30
+    printf("%-10s | %-15s | %-15s\n", "Size (n)", "Avg Time (s)", "Bandwidth (GB/s)");
+    printf("----------------------------------------------------------\n");
+    for (int i = 0; i < num_sizes; i++){
+        int n = sizes[i];
+        float *A = malloc(n * n * sizeof(float));
+        float *B = malloc(n * n * sizeof(float));
+        fill_random(B, n);
 
-    printf("Enter matrix size n: ");
-  
-    if (scanf("%d", &n) != 1) {
-        printf("Invalid input\n");
-        return 1;
+        double avg_time = benchmark(A, B, n, trials);
+        double bandwidth = calc_bandwidth(n, avg_time);
+
+        printf("%-10d | %-15f | %-15.4f\n", n, avg_time, bandwidth);
+        free(A);
+        free(B);
     }
-    float *A = malloc(n * n * sizeof(float));
-    float *B = malloc(n * n * sizeof(float));
-
-    //zero_matrix(A, n);
-    fill_random(B, n);
-
-    double avg_time = benchmark(A, B, n, trials);
-    double bandwidth = calc_bandwidth(n, avg_time);
-
-    printf("\nResults for n = %d\n\n", n);
-    printf("Average Time: %f seconds\n", avg_time);
-    printf("Memory Bandwidth (Calculated): %f GB/s\n", bandwidth);
-
-    // display the original and transposed matrices:
+    return 0;
+    /*
+    display the original and transposed matrices: used earlier to check if transp is correct
     printf("B, original:");
     print_mat(B,n);
 
@@ -102,8 +101,6 @@ int main(){
     transpose(A, B, n);
     print_mat(A, n);
 
-    free(A);
-    free(B);
-    return 0;
-
+    */
+    
 }
