@@ -11,11 +11,20 @@ void get_walltime_(double* wcTime) {
     *wcTime = (double)(tp.tv_sec + tp.tv_usec/1000000.0);
 }
 
-// Marie change: use [i*n + j], this is what I did last time too
+// Marie change: use [i*n + j], this is what I did last time too, this is the row order transpose
 void transpose(float *A, float *B ,int n) {
     for (int i = 0; i < n; i++) {
         for (int j = 0; j < n; j++) {
             //A[j][i] = B[i][j];
+            A[j*n + i] = B[i*n + j];
+        }
+    }
+}
+
+// i forgot to add this
+void transpose_ji(float *A, float *B, int n) {
+    for (int j = 0; j < n; j++) { // j is now outer
+        for (int i = 0; i < n; i++) { // i is now inner
             A[j*n + i] = B[i*n + j];
         }
     }
@@ -48,7 +57,8 @@ double benchmark(float *A, float *B, int n, int trials){
         zero_matrix(A, n);
 
         get_walltime_(&t_start);
-        transpose(A, B, n);
+        //transpose(A, B, n);
+        transpose_ji(A, B, n);
         get_walltime_(&t_end);
 
         total += (t_end - t_start);
